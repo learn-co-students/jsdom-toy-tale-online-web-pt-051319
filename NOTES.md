@@ -6,16 +6,33 @@
   </div>
 
 
-function renderTrainers(json) {
-  const main = document.querySelector('main')
-  json.data.forEach(trainer => {
-    const card = document.createElement("div");
-    card.classList.add("card")
-    card.setAttribute("data-id", `${trainer.id}`)
-    card.innerHTML = `<p>${trainer.attributes.name}</p>
-    <button class="add" onClick=addPokemon(${trainer.id}) data-trainer-id="${trainer.id}">Add Pokemon</button>`
-    main.appendChild(card)
-    const ul = document.createElement("ul")
-    card.appendChild(ul)
-  })
-}
+function addPokemon(trainerId) {
+  console.log(`${trainerId}`)
+  const trainerData = {
+    trainer_id: `${trainerId}`
+  }
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify(trainerData)
+  };
+  // debugger;
+  fetch(POKEMONS_URL, options)
+    .then(response => console.log(response))
+    .then(object => console.log(object));
+    document.location.reload();
+    // loadPokemon(TRAINERS_URL);
+};
+
+ar nameInput = document.getElementById('name');
+
+document.querySelector('form.pure-form').addEventListener('submit', function (e) {
+<!-- 
+    //prevent the normal submission of the form
+    e.preventDefault();
+
+    console.log(nameInput.value);     -->
+});

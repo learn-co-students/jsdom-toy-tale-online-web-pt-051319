@@ -13,7 +13,35 @@ document.addEventListener("DOMContentLoaded", ()=>{
       toyForm.style.display = 'none'
     }
   })
+  const input = document.querySelectorAll('input.input-text')
+  toyForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formValues = []
+    input.forEach(val => {
+      formValues.push(val.value)
+    })
+    newToy(formValues);
+  })
 })
+
+function newToy(formValues) {
+  const toyData = {
+    name: `${formValues[0]}`,
+    image: `${formValues[1]}`
+  }
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify(toyData)
+  };
+  fetch(TOYS_URL, options)
+    .then(response => console.log(response))
+    .then(object => console.log(object));
+    document.location.reload();
+};
 
 function loadToys(TOYS_URL) {
   fetch(TOYS_URL)
@@ -43,3 +71,11 @@ function renderToys(json) {
     card.appendChild(btn)
   })
 }
+
+
+
+// function newToy(name, img) {
+//   console.log(`${name}`)
+//   console.log(`${img}`)
+
+// }
