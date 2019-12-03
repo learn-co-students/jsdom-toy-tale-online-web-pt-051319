@@ -3,8 +3,10 @@ const TOYS_URL = "http://localhost:3000/toys"
 
 document.addEventListener("DOMContentLoaded", ()=>{
   loadToys(TOYS_URL);
+  setTimeout(() => listenLikeButtons(), 1000)
   const addBtn = document.querySelector('#new-toy-btn')
   const toyForm = document.querySelector('.container')
+  
   addBtn.addEventListener('click', () => {
     addToy = !addToy
     if (addToy) {
@@ -24,10 +26,43 @@ document.addEventListener("DOMContentLoaded", ()=>{
   })
 })
 
+function listenLikeButtons() {
+  const likeBtns = document.querySelectorAll('button.like-btn')
+  likeBtns.forEach(btn => {
+      btn.addEventListener('click', function(event) {
+      
+      const toyId = btn.parentElement.getAttribute("toy-id")
+      const toyLikes = btn.previousElementSibling.getAttribute("likes")
+      // debugger;
+      addLikes(toyId, toyLikes);
+    });
+    })
+  };
+
+  function addLikes(toyId, toyLikes) {
+    toyLikes++
+    const likeData = {
+      likes: `${toyLikes}`
+    }
+    const options = {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(likeData)
+    };
+    fetch(`http://localhost:3000/toys/${toyId}`, options)
+      .then(reponse => console.log(reponse))
+      .then(object => console.log(object));
+      document.location.reload();
+  };
+
 function newToy(formValues) {
   const toyData = {
     name: `${formValues[0]}`,
-    image: `${formValues[1]}`
+    image: `${formValues[1]}`,
+    likes: "0"
   }
   const options = {
     method: "POST",
@@ -54,6 +89,7 @@ function renderToys(json) {
   json.forEach(toy => {
     const card = document.createElement("div")
     card.classList.add("card")
+    card.setAttribute("toy-id", `${toy.id}`)
     toyCollection.appendChild(card)
     h2 = document.createElement("h2")
     h2.innerHTML = `<h2>${toy.name}</h2>`
@@ -63,6 +99,7 @@ function renderToys(json) {
     img.setAttribute("src", `${toy.image}`)
     card.appendChild(img)
     p = document.createElement("p")
+    p.setAttribute("likes", `${toy.likes}`)
     p.innerHTML = `<p>${toy.likes} Likes </p>`
     card.appendChild(p)
     btn = document.createElement("button")
@@ -73,9 +110,3 @@ function renderToys(json) {
 }
 
 
-
-// function newToy(name, img) {
-//   console.log(`${name}`)
-//   console.log(`${img}`)
-
-// }
